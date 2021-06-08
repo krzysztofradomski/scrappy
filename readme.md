@@ -2,6 +2,7 @@ This is a prototype, created with minimum input and maximum output in mind.
 
 No time for setting up a proper myqsl database, a json-based local file system is used instead.
 Heatmap is very basic and mostly based on a Google Maps example.
+Requirements: nodejs 14+.
 
 Note: you must provide your own google maps api key.
 

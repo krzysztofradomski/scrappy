@@ -2,11 +2,11 @@
   "name": "scrappy",
   "version": "1.0.0",
   "description": "a web scraping app prototype",
-  "main": "index.js",
+  "main": "scrape.js",
   "scripts": {
-    "scrape": "node index.js",
-    "maps": "npx http-server static",
-    "start": "npm run scrape && npm run maps"
+    "scrape": "node scrape.js",
+    "serve": "node server.js",
+    "start": "npm run scrape && npm run serve"
   },
   "keywords": [],
   "author": "krzysztof@radomski.io",

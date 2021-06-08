@@ -1,30 +1,29 @@
 // based on https://developers.google.com/maps/documentation/javascript/examples/layer-heatmap#maps_layer_heatmap-javascript
 let map, heatmap, points;
 
-
 function initAll() {
-
-    var xobj = new XMLHttpRequest();
-    xobj.overrideMimeType("application/json");
-    xobj.open('GET', '../data.json', true);
-    xobj.onreadystatechange = function() {
-        if (xobj.readyState == 4 && xobj.status == "200") {
-            points = JSON.parse(xobj.responseText).map(el => (
-                [...el.coords.split(',').map(l => parseFloat(l)),
-                parseFloat(el.latestPM2dot5)])
-            );
-            console.log(points);
-            initMap();
-            
-        }
+  // fasterst way get the locally saved data
+  const xobj = new XMLHttpRequest();
+  xobj.overrideMimeType("application/json");
+  xobj.open("GET", "../data.json", true);
+  xobj.onreadystatechange = function () {
+    if (xobj.readyState == 4 && xobj.status == "200") {
+      // parse the data into points of the following structure: [lattitue, longitute, weight]
+      points = JSON.parse(xobj.responseText).map((el) => [
+        ...el.coords.split(",").map((l) => parseFloat(l)),
+        parseFloat(el.latestPM2dot5),
+      ]);
+      console.log(points);
+      initMap();
     }
-    xobj.send(null);
+  };
+  xobj.send(null);
 }
 
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 6,
-    center: { lat: 52.8398, lng: -6.9319 },
+    center: { lat: 53, lng: -7 },
     mapTypeId: "satellite",
   });
   heatmap = new google.maps.visualization.HeatmapLayer({
@@ -66,6 +65,8 @@ function changeOpacity() {
 }
 
 function getPoints() {
-  return points.map(p =>  ({location: new google.maps.LatLng(p[0], p[1]), weight: p[2]}))
-  
+  return points.map((p) => ({
+    location: new google.maps.LatLng(p[0], p[1]),
+    weight: p[2],
+  }));
 }
