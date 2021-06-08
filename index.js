@@ -15,10 +15,10 @@ const log = (...args) =>
     // The list should not change to often so it is a wise to 'cache' it.
     fs.readFile("stations.json", (err, data) => {
       if (err) {
-        log(`No stations saved, will scrape ${STATIONS_LIST_URL} for data.`);
+        return log(`No stations saved, will scrape ${STATIONS_LIST_URL} for data.`);
       } else {
         stations = JSON.parse(data);
-        log(`Found ${stations.length} stations in a local file.`);
+        return log(`Found ${stations.length} stations in a local file.`);
       }
     });
 
@@ -38,9 +38,9 @@ const log = (...args) =>
 
     fs.writeFile("stations.json", JSON.stringify(stations), (err, data) => {
       if (err) {
-        log(err);
+        return log(err);
       } else {
-        log(data);
+        return log(data);
       }
     });
 
@@ -62,11 +62,11 @@ const log = (...args) =>
 
     // Clean up and save results
     await browser.close();
-    fs.writeFile("data.json", JSON.stringify(data), (err, data) => {
+    fs.writeFile("static/data.json", JSON.stringify(data), (err, data) => {
       if (err) {
-        log(err);
+        return log(err);
       } else {
-        log("Saved data", data);
+        return log("Saved data", data);
       }
     });
   } catch (err) {
