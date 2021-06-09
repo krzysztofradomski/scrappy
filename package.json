@@ -5,10 +5,10 @@
   "main": "scrape.js",
   "scripts": {
     "scrape": "node scrape.js",
-    "serve": "node server.js",
+    "serve": "node serve.js",
     "start": "npm run scrape && npm run serve"
   },
-  "keywords": [],
+  "keywords": ["scrape", "prototype"],
   "author": "krzysztof@radomski.io",
   "private": true,
   "license": "ISC",

@@ -1,6 +1,8 @@
 // based on https://developers.google.com/maps/documentation/javascript/examples/layer-heatmap#maps_layer_heatmap-javascript
 let map, heatmap, points;
 
+const removeAbnormal = ({latestPM2dot5}) => latestPM2dot5 !== 'Not available' && !latestPM2dot5.includes("-");
+
 function initAll() {
   // fasterst way get the locally saved data
   const xobj = new XMLHttpRequest();
@@ -9,7 +11,7 @@ function initAll() {
   xobj.onreadystatechange = function () {
     if (xobj.readyState == 4 && xobj.status == "200") {
       // parse the data into points of the following structure: [lattitue, longitute, weight]
-      points = JSON.parse(xobj.responseText).map((el) => [
+      points = JSON.parse(xobj.responseText).filter(removeAbnormal).map((el) => [
         ...el.coords.split(",").map((l) => parseFloat(l)),
         parseFloat(el.latestPM2dot5),
       ]);
@@ -21,13 +23,14 @@ function initAll() {
 }
 
 function initMap() {
+  const heatmapData = getPoints()
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 6,
     center: { lat: 53, lng: -7 },
     mapTypeId: "satellite",
   });
   heatmap = new google.maps.visualization.HeatmapLayer({
-    data: getPoints(),
+    data: heatmapData,
     map: map,
   });
 }
@@ -70,3 +73,4 @@ function getPoints() {
     weight: p[2],
   }));
 }
+

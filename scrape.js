@@ -1,13 +1,15 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
+// Let's pretend it's an external logging tool.
+const log = require("./utils/log")
 
-// Use whatever you like.
-const log = (...args) =>
-  console.log("\033[33m\x1b[40mSCRAPPY LOG:\033[0m", ...args);
+
+const STATIONS_LIST_URL = "https://airquality.ie/stations";
+const STATION_URL = "https://airquality.ie/station/";
+
+let t = process.hrtime();
 
 (async function main() {
-  const STATIONS_LIST_URL = "https://airquality.ie/stations";
-  const STATION_URL = "https://airquality.ie/station/";
   const data = [];
   let stations = [];
 
@@ -15,7 +17,9 @@ const log = (...args) =>
     // The list should not change to often so it is a wise to 'cache' it.
     fs.readFile("stations.json", (err, data) => {
       if (err) {
-        return log(`No stations saved, will scrape ${STATIONS_LIST_URL} for data.`);
+        return log(
+          `No stations saved, will scrape ${STATIONS_LIST_URL} for data.`
+        );
       } else {
         stations = JSON.parse(data);
         return log(`Found ${stations.length} stations in a local file.`);
@@ -33,7 +37,7 @@ const log = (...args) =>
     stations = eval(scriptWithConfig.match(/(?!"monitors":)(\[".+])/gi)[0]);
 
     if (!Array.isArray(stations)) {
-      throw new Error("Problem reading stations from given url!");
+      throw new Error("Problem with reading stations list!");
     }
 
     fs.writeFile("stations.json", JSON.stringify(stations), (err, data) => {
@@ -66,10 +70,25 @@ const log = (...args) =>
       if (err) {
         return log(err);
       } else {
-        return log("Saved data", data);
+        return log("Saved stations data", data);
+      }
+    });
+    t = process.hrtime(t);
+    const stats = {
+      lastTriggeredAt: new Date().toDateString(),
+      estimatedRuntimeInSeconds: t[0],
+    };
+    log(`Finished task in ~ ${stats.estimatedRuntimeInSeconds} seconds.`)
+    fs.writeFile("stats.json", JSON.stringify(stats), (err, data) => {
+      if (err) {
+        return log(err);
+      } else {
+        return log("Saved run stats data", data);
       }
     });
   } catch (err) {
     log("Something went really wrong!", err);
+  } finally {
+    log("All done now.");
   }
 })();
