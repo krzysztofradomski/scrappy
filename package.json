@@ -8,13 +8,15 @@
     "serve": "node serve.js",
     "start": "npm run scrape && npm run serve"
   },
-  "keywords": ["scrape", "prototype"],
+  "keywords": [
+    "scrape",
+    "prototype"
+  ],
   "author": "krzysztof@radomski.io",
   "private": true,
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "mysql": "^2.18.1",
     "puppeteer": "^10.0.0"
   },
   "engines": {
